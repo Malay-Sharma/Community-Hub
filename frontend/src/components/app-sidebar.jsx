@@ -79,7 +79,7 @@ const sidebar_menu = {
     },
     {
       title: "Stories",
-      url: "/dashboard/collection",
+      url: "/dashboard/story",
       icon: Images,
     },
     {

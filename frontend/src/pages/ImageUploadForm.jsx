@@ -3,22 +3,20 @@ import { Button } from '@/components/ui/button';
 import ImageDetailForm from '@/components/imageDetailForm';
 
 const ImageUploadForm = () => {
-  const [image, setImage] = useState(null);
-  const [imageURL, setImageURL] = useState('');
+  const [mediaFile, setMediaFile] = useState(null);
+  const [mediaURL, setMediaURL] = useState('');
   const [isFrozen, setIsFrozen] = useState(true);
   const [showDetailsForm, setShowDetailsForm] = useState(false);
   const [showUploadUI, setShowUploadUI] = useState(true);
 
   const isMobile = window.innerWidth < 768;
 
-  const handleImageUpload = (e) => {
+  const handleMediaUpload = (e) => {
     const file = e.target.files[0];
     if (file) {
-      setImage(file);
-      setImageURL(URL.createObjectURL(file));
-
+      setMediaFile(file);
+      setMediaURL(URL.createObjectURL(file));
       if (!isMobile) {
-        // On web, form stays frozen until button click
         setShowUploadUI(true);
       }
     }
@@ -26,24 +24,25 @@ const ImageUploadForm = () => {
 
   const handleUploadNewClick = () => {
     if (isMobile) {
-      // On mobile, hide upload UI and show details form
       setShowUploadUI(false);
-
-      // Optional 2 sec delay before showing form
       setTimeout(() => {
         setShowDetailsForm(true);
         setIsFrozen(false);
-      }, 2000); // adjust or remove delay if needed
+      }, 2000);
     } else {
-      // On web, unfreeze form
       setIsFrozen(false);
     }
   };
 
   const UploadBox = () => (
     <div className="flex flex-col items-center justify-center border-2 border-dashed border-gray-300 rounded-lg p-6 w-full h-full bg-gray-200">
-      <label className="cursor-pointer ">
-        <input type="file" className="hidden w-full" onChange={handleImageUpload} />
+      <label className="cursor-pointer">
+        <input
+          type="file"
+          accept="image/*,video/*"
+          className="hidden w-full"
+          onChange={handleMediaUpload}
+        />
         <div className="flex flex-col items-center">
           <svg
             className="w-12 h-12 text-gray-400"
@@ -58,61 +57,78 @@ const ImageUploadForm = () => {
               d="M7 16V4m0 0l-4 4m4-4l4 4m4 12h4m0 0v-4m0 4l-4-4m4 4l4-4M3 20h4"
             />
           </svg>
-          <span className="text-gray-500 mt-2">Click to upload image</span>
+          <span className="text-gray-500 mt-2">Click to upload image or video</span>
         </div>
       </label>
     </div>
   );
 
-const UploadedImageView = () => (
-  <div className="flex flex-col items-center w-full space-y-2 p-4">
-    <img src={imageURL} alt="Uploaded" className="max-w-full rounded shadow" />
+  const UploadedMediaView = () => (
+    <div className="flex flex-col items-center w-full space-y-2 p-4">
+      {mediaFile && mediaFile.type.startsWith("image") ? (
+        <img src={mediaURL} alt="Uploaded" className="max-w-full rounded shadow" />
+      ) : mediaFile && mediaFile.type.startsWith("video") ? (
+        <video
+          src={mediaURL}
+          controls
+          className="max-w-full rounded shadow"
+          preload="metadata"
+        />
+      ) : null}
 
-    <div className="w-full flex flex-col space-y-2">
-      <input
-        type="file"
-        className="hidden"
-        id="upload-new-file"
-        onChange={handleImageUpload}
-      />
-      <Button className="w-full" onClick={handleUploadNewClick}>
-        Proceed to Details
-      </Button>
-      
-      <label htmlFor="upload-new-file">
-        <Button className="w-full" type="button">
-          Upload New Image
+      <div className="w-full flex flex-col space-y-2">
+        <input
+          type="file"
+          accept="image/*,video/*"
+          className="hidden"
+          id="upload-new-file"
+          onChange={handleMediaUpload}
+        />
+        <Button className="w-full" onClick={handleUploadNewClick}>
+          Proceed to Details
         </Button>
-      </label>
 
+        <label htmlFor="upload-new-file">
+          <Button className="w-full" type="button">
+            Upload New Media
+          </Button>
+        </label>
+      </div>
     </div>
-  </div>
-);
-
+  );
 
   return (
     <div className="w-full h-full p-4 md:flex justify-center ">
       <div className="flex w-full h-full md:w-7/8 items-center justify-center border-2 rounded-2xl p-2 ">
         <div className="flex flex-col md:flex-row md:space-x-4 w-full h-full ">
-          {/* LEFT (mobile: takes full width, web: half) */}
+          {/* LEFT */}
           <div className="w-full h-full md:w-1/2 space-y-4">
             {isMobile ? (
               showUploadUI
-                ? (image ? <UploadedImageView /> : <UploadBox />)
-                : (showDetailsForm && <ImageDetailForm frozen={isFrozen} image={image} imageURL={imageURL} />)
+                ? (mediaFile ? <UploadedMediaView /> : <UploadBox />)
+                : (showDetailsForm && (
+                    <ImageDetailForm
+                      frozen={isFrozen}
+                      image={mediaFile}
+                      imageURL={mediaURL}
+                    />
+                  ))
             ) : (
-              image ? <UploadedImageView /> : <UploadBox />
+              mediaFile ? <UploadedMediaView /> : <UploadBox />
             )}
           </div>
 
-          {/* RIGHT (only on web) */}
+          {/* RIGHT */}
           {!isMobile && (
             <div className="w-full h-full md:w-1/2">
-              <ImageDetailForm frozen={isFrozen} image={image} imageURL={imageURL} />
+              <ImageDetailForm
+                frozen={isFrozen}
+                image={mediaFile}
+                imageURL={mediaURL}
+              />
             </div>
           )}
         </div>
-
       </div>
     </div>
   );

@@ -1,9 +1,10 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { EllipsisVertical, ArrowLeft, Dot, Smile, Plus, Phone, Video, SendHorizontal } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { useAuth } from '@/context/authContext';
 import { getInitials } from '@/lib/get-initials';
+import EmojiPicker from 'emoji-picker-react';
 
 const Messages = () => {
   const { user: currentUser } = useAuth();
@@ -12,6 +13,9 @@ const Messages = () => {
   const [chatId, setChatId] = useState(null);
   const [chatHistory, setChatHistory] = useState([]);
   const [newMessage, setNewMessage] = useState("");
+  const messagesEndRef = useRef(null);
+  const [showEmojiPicker, setShowEmojiPicker] = useState(false);
+
 
   useEffect(() => {
     const fetchUsers = async () => {
@@ -56,6 +60,11 @@ const Messages = () => {
     }
   };
 
+  const handleEmojiClick = (emojiData) => {
+    setNewMessage(prev => prev + emojiData.emoji);
+  };
+
+
   const handleSendMessage = async () => {
     if (!newMessage.trim()) return;
     try {
@@ -82,6 +91,14 @@ const Messages = () => {
     setChatId(null);
     setChatHistory([]);
   };
+
+  const scrollToBottom = () => {
+    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+  };
+
+  useEffect(() => {
+    scrollToBottom();
+  }, [chatHistory]);
 
   return (
     <div className="flex h-screen bg-gray-50">
@@ -136,19 +153,70 @@ const Messages = () => {
 
             <div className="absolute top-[48px] bottom-[48px] left-0 right-0 overflow-y-auto p-4 flex flex-col space-y-2 scrollbar-hidden"
               style={{ backgroundImage: "url('https://www.toptal.com/designers/subtlepatterns/uploads/doodles.png')" }}>
-              {chatHistory.map((msg, idx) => (
-                <div key={idx} className={`max-w-xs p-2 rounded ${msg.sender === currentUser._id ? 'bg-blue-500 text-white self-end' : 'bg-gray-200 self-start'}`}>
-                  {msg.message}✓✓
-                  
+                {chatHistory.map((msg, idx) => {
+                  const isSender = msg.sender === currentUser._id;
+                  const time = new Date(msg.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+                  const date = new Date(msg.createdAt).toDateString();
 
-                </div>
-              ))}
+                  const prevDate = idx > 0 ? new Date(chatHistory[idx - 1].createdAt).toDateString() : null;
+
+                  // Determine date label (Today / Yesterday / date)
+                  const todayStr = new Date().toDateString();
+                  const yesterdayStr = new Date(Date.now() - 86400000).toDateString();
+                  let dateLabel = "";
+                  if (date !== prevDate) {
+                    if (date === todayStr) {
+                      dateLabel = "Today";
+                    } else if (date === yesterdayStr) {
+                      dateLabel = "Yesterday";
+                    } else {
+                      dateLabel = new Date(msg.createdAt).toLocaleDateString();
+                    }
+                  }
+
+                  return (
+                    <React.Fragment key={idx}>
+                      {dateLabel && (
+                        <div className="self-center bg-gray-300 text-xs text-gray-700 rounded px-2 py-1 mb-2">
+                          {dateLabel}
+                        </div>
+                      )}
+                      <div
+                        className={`max-w-xs p-2 rounded ${
+                          isSender ? 'bg-blue-500 text-white self-end' : 'bg-gray-200 self-start'
+                        }`}
+                      >
+                        <div>{msg.message}</div>
+                        <div className="flex justify-end items-center gap-1 text-xs opacity-80 mt-1">
+                          <span>{time}</span>
+                          <span>✔</span>
+                        </div>
+                      </div>
+                    </React.Fragment>
+                  );
+                })}
+
+
+                {/* Dummy element to scroll to */}
+                <div ref={messagesEndRef} />
             </div>
 
             <div className="absolute bottom-0 left-0 right-0 z-10 border-t p-2 bg-gray-100 flex items-center gap-2">
               
+                  <Smile className="cursor-pointer" onClick={() => setShowEmojiPicker(prev => !prev)} />
+                    
                   <Plus />
-                  <Smile />
+
+                  {showEmojiPicker && (
+                    <div className="absolute bottom-14 left-2 z-20">
+                      <EmojiPicker
+                        onEmojiClick={handleEmojiClick}
+                        theme="light"
+                      />
+                    </div>
+                  )}
+
+
               <input
                 className="flex-1 border rounded px-2 py-1 mx-2 bg-white"
                 placeholder="Type a message..."

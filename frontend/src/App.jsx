@@ -17,6 +17,7 @@ import PostPage from './pages/PostPage'
 import ArchievePage from './pages/ArchievePage'
 import NotFound from './pages/NotFound'
 import ImageUploadForm from './pages/ImageUploadForm'
+import StoryPage from './pages/StoryPage'
 
 const App = () => {
   // Simulated authentication state
@@ -58,6 +59,7 @@ const App = () => {
           <Route path="collection" element={<Collection />} />
           <Route path="archieve" element={<Archieve />} />
           <Route path="messages" element={<Messages />} />
+          <Route path="story" element={<StoryPage />} />
 
           <Route path="search/:id" element={<PostPage />} />
           <Route path="archieve/post/:id" element={<ArchievePage />} />

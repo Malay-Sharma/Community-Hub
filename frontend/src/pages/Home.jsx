@@ -12,6 +12,7 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Dot, EllipsisVertical, Heart } from 'lucide-react';
 import HomePostDialogHeader from '@/components/DialogPages/HomePostDialogHeader';
 import SuggestionSmallDialog from '@/components/DialogPages/SuggestionSmallDialog';
+import { useLocation } from 'react-router-dom';
 
 const items = [
   { id: 1, media: "/waifu.jpeg" },
@@ -43,6 +44,7 @@ const initialComments = [
 const Home = () => {
   const [allUsers, setAllUsers] = useState([]);
   const [images, setImages] = useState([]);
+
 
   useEffect(() => {
     const fetchAllData = async () => {
@@ -96,11 +98,15 @@ const Home = () => {
   }, []);
 
   return (
-    <div className="max-w-full w-full overflow-x-hidden py-4">
+    <div className="max-w-full w-full  overflow-hidden py-4 ">
       <div className="max-w-full w-full overflow-hidden">
-        <StorySlider />
+        
+        <div className="w-full overflow-hidden md:w-[calc(100%-16rem)]">
+          <StorySlider />
+        </div>
 
-        <main className="w-full h-screen flex bg-gray-100">
+
+        <main className="w-full md:w-[calc(100%-16rem)] h-screen flex bg-gray-100">
           <div className="w-full md:w-2/3 h-full overflow-y-auto p-6 border-r border-gray-300 scrollbar-hide">
             <div className="space-y-4">
               {images.length === 0 && (
@@ -121,7 +127,7 @@ const Home = () => {
                     <div className="text-gray-700 leading-relaxed text-lg px-2">
                       <p>
                         <span className="font-semibold text-gray-900">
-                          {matchedUser?.username || "Unknown User"}
+                          {/* {matchedUser?.username || "Unknown User"} */}
                         </span>{" "}
                         {img.post?.caption || "No caption provided."}
                       </p>

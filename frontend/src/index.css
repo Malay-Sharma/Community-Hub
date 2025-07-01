@@ -166,3 +166,9 @@ ul a {
 .scrollbar-hide::-webkit-scrollbar {
   display: none;
 }
+
+.no-x-scroll {
+  max-width: 100%;
+  overflow-x: hidden;
+  width: 100%;
+}

@@ -40,7 +40,7 @@ const DashboardLayout = () => {
 
 
   return (
-    <SidebarProvider className="">
+    <SidebarProvider  className="no-x-scroll">
       <SidebarAutoCollapse />
       <AppSidebar />
       <SidebarInset className=''>
@@ -67,10 +67,11 @@ const DashboardLayout = () => {
         </header>
         )}
 
-        {/* <div className="flex flex-1 flex-col gap-bg-gray-2004 p-4 pt-0 w-full border-1 border-[#C4C4C4] bg-gradient-to-r from-[#0f0c29] via-[#302b63] to-[#24243e] text-white"> */}
-        <div className="flex flex-1 flex-col pt-0 w-full overflow-x-hidden max-w-full border-none mb-15 md:mb-0 scrollbar-hide">
-          <Outlet/>
-        </div>
+      <div className="flex flex-1 flex-col pt-0 no-x-scroll border-none mb-15 md:mb-0 scrollbar-hide">
+        <Outlet />
+      </div>
+
+
         <div className="fixed bottom-0 left-0 block md:hidden w-full h-10">
           <Footer />
         </div>

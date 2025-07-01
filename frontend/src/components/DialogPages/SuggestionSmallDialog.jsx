@@ -27,7 +27,7 @@ const SuggestionSmallDialog = ({ user }) => {
         </Avatar>                
         <div className='flex flex-col gap-0.5'>
           <div className='flex items-center justify-between w-full'>
-            <p>{user?.name || "Guest"}</p>
+            <p>{user?.email || "Guest"}</p>
             <Dot className='text-blue-600' />
             <span className='text-blue-600'>Follow</span>
           </div>

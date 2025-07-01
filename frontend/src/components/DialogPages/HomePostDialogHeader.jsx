@@ -4,6 +4,7 @@ import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar';
 import { Dot, EllipsisVertical } from 'lucide-react';
 import { getInitials } from '@/lib/get-initials';
 import { PostDropDown } from '../DropDown/PostDropDown';
+import { useLocation } from 'react-router-dom';
 
 const getTimeAgo = (timestamp) => {
   const now = new Date();
@@ -23,15 +24,19 @@ const getTimeAgo = (timestamp) => {
 
 const HomePostDialogHeader = ({ matchedUser, postTimestamp }) => {
   const initials = getInitials(matchedUser?.name || matchedUser?.username);
+  const { user } = useAuth();
+
+  const info = useLocation();
+  const userInfo = info.state?.user || user;
 
   return (
     <div className='flex items-center justify-between px-2'>
       <div className='flex items-center justify-start gap-4'>
         <Avatar className="h-28 w-28 rounded-full size-10 border-2 ">
-          {matchedUser?.avatar && matchedUser.avatar.trim() !== "" ? (
+          {userInfo?.avatar && userInfo.avatar.trim() !== "" ? (
             <AvatarImage
-              src={matchedUser.avatar.trim()}
-              alt={matchedUser.name || matchedUser.username}
+              src={userInfo.avatar.trim()}
+              alt={userInfo.name || userInfo.username}
               className="rounded-lg"
             />
           ) : (
@@ -42,7 +47,7 @@ const HomePostDialogHeader = ({ matchedUser, postTimestamp }) => {
         </Avatar>
         <div className='flex flex-col gap-0.5'>
           <div className='flex items-center'>
-            <p>{matchedUser?.name || matchedUser?.username || "Guest"}</p>
+            <p>{userInfo?.name || matchedUser?.username || "Guest"}</p>
             <Dot className='text-blue-600' />
             <span className='text-blue-600'>Follow</span>
           </div>

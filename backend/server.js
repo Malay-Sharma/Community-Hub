@@ -8,6 +8,8 @@ import userRouter from "./routes/userRoute.js";
 import postRouter from "./routes/postRouter.js";
 import chatRouter from "./routes/chatRoutes.js";
 import ImageKit from "imagekit";
+import userStory from "./models/userStory.js";
+import storyRouter from "./routes/storyRoutes.js";
 
 // --- App Setup ---
 const app = express();
@@ -65,6 +67,7 @@ app.use('/api/auth', authRouter)
 app.use("/api", userRouter);
 app.use("/api/images", postRouter)
 app.use("/api/chats", chatRouter);
+app.use("/api/stories", storyRouter)
 
 
 
