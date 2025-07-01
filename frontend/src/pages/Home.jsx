@@ -49,7 +49,7 @@ const Home = () => {
   useEffect(() => {
     const fetchAllData = async () => {
       try {
-        const imgRes = await axios.get("http://localhost:4000/api/images", {
+        const imgRes = await axios.get(`${import.meta.env.VITE_API_BASE_URL}/api/images`, {
           withCredentials: true,
         });
         const imgData = imgRes.data;
@@ -59,7 +59,7 @@ const Home = () => {
             const postId = img.name.split("_")[0];
             try {
               const postRes = await axios.get(
-                `http://localhost:4000/api/images/mongo/${postId}`,
+                `${import.meta.env.VITE_API_BASE_URL}/api/images/mongo/${postId}`,
                 { withCredentials: true }
               );
               return {
@@ -84,7 +84,7 @@ const Home = () => {
 
     const fetchUsers = async () => {
       try {
-        const res = await axios.get("http://localhost:4000/api", {
+        const res = await axios.get(`${import.meta.env.VITE_API_BASE_URL}/api`, {
           withCredentials: true,
         });
         setAllUsers(res.data);
