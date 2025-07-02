@@ -7,7 +7,10 @@ import tailwindcss from "@tailwindcss/vite"
 export default defineConfig({
   plugins: [react(), tailwindcss()],
     server: {
-      historyApiFallback: true, // 👈 allows deep routes like /archieve/:id
+      // historyApiFallback: true, // 👈 allows deep routes like /archieve/:id
+      fs: {
+        strict: false,
+      },
     },
   resolve: {
     alias: {
